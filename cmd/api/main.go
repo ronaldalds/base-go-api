@@ -8,13 +8,12 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/gofiber/fiber/v2"
-	"github.com/ronaldalds/base-go-api/internal/database"
+	"github.com/ronaldalds/base-go-api/internal/config/envs"
+	"github.com/ronaldalds/base-go-api/internal/config/handlers"
+	"github.com/ronaldalds/base-go-api/internal/config/settings"
 	"github.com/ronaldalds/base-go-api/internal/routes"
-	"github.com/ronaldalds/base-go-api/internal/server"
-	"github.com/ronaldalds/base-go-api/internal/settings"
 
-	_ "github.com/joho/godotenv/autoload"
+	"github.com/gofiber/fiber/v2"
 )
 
 func gracefulShutdown(fiberServer *fiber.App, done chan bool) {
@@ -42,9 +41,15 @@ func gracefulShutdown(fiberServer *fiber.App, done chan bool) {
 }
 
 func main() {
-	settings.Load()
-	database.DbLoad()
-	app := server.New()
+	if err := settings.Config(); err != nil {
+		log.Fatal(err)
+	}
+
+	app := fiber.New(fiber.Config{
+		AppName:      envs.Env.AppName,
+		ServerHeader: envs.Env.AppName,
+		ErrorHandler: handlers.ErrorHandler,
+	})
 	routes := routes.NewRouter(app)
 	routes.RegisterFiberRoutes()
 
@@ -52,7 +57,7 @@ func main() {
 	done := make(chan bool, 1)
 
 	go func() {
-		err := app.Listen(fmt.Sprintf(":%d", settings.Env.Port))
+		err := app.Listen(fmt.Sprintf(":%d", envs.Env.Port))
 		if err != nil {
 			panic(fmt.Sprintf("http server error: %s", err))
 		}
