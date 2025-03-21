@@ -89,7 +89,7 @@ func LoadSQL(extraModels ...any) {
 		Port:     envs.Env.SqlPort,
 		TimeZone: envs.Env.TimeZone,
 		Schema:   envs.Env.SqlSchema,
-		Models:   append([]any{}, extraModels...), // Concatena os modelos recebidos como parâmetro
+		Models:   extraModels,
 	}
 
 	// Configuração final do banco de dados

@@ -26,7 +26,9 @@ func NewRouter(app *fiber.App) *Router {
 func (r *Router) RegisterFiberRoutes() {
 	r.Middleware.CorsMiddleware()
 	r.Middleware.SecurityMiddleware()
-	r.Middleware.Telemetry("auth/login")
+	if envs.Env.LogsUrl != "" {
+		r.Middleware.Telemetry("auth/login")
+	}
 
 	apiV2 := r.App.Group("/api/v2")
 	r.Core.RegisterRouter(apiV2)

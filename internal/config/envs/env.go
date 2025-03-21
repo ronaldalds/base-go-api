@@ -81,8 +81,8 @@ func Load() {
 		SuperEmail:    getEnv("SUPER_EMAIL", false, "ronald.ralds@gmail.com"),
 		SuperPhone:    getEnv("SUPER_PHONE", false, "+558892200365"),
 		// APP
-		LogsPort:           getEnvAsInt("LOG_PORT", true),
-		LogsUrl:            getEnv("LOG_URL", false, "http://localhost"),
+		LogsPort:           getEnvAsInt("LOG_PORT", false),
+		LogsUrl:            getEnv("LOG_URL", false),
 		AppName:            getEnv("APP_NAME", false, "app"),
 		TimeUCT:            getUCT("TIMEZONE", false, "America/Fortaleza"),
 		TimeZone:           getEnv("TIMEZONE", false, "America/Fortaleza"),
